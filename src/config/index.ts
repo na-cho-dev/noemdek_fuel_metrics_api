@@ -1,0 +1,32 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
+export const config = {
+  // Server Configuration
+  NODE_ENV: process.env.NODE_ENV || "development",
+  PORT: parseInt(process.env.PORT || "5000"),
+  HOST: process.env.HOST || "0.0.0.0",
+
+  // Database Configuration
+  MONGODB_URI:
+    process.env.MONGODB_URI || "mongodb://localhost:27017/event_service_db",
+
+  // JWT Configuration
+  JWT: {
+    SECRET: process.env.JWT_SECRET || "default-secret-key",
+    EXPIRES_IN: process.env.JWT_EXPIRES_IN || "1d",
+  },
+
+  // CORS Configuration
+  CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
+
+  // Client URL
+  CLIENT_URL: process.env.CLIENT_URL || "http://localhost:3000",
+
+  // Rate Limiting Configuration
+  RATE_LIMIT: {
+    WINDOW: parseInt(process.env.RATE_LIMIT_WINDOW || "900000"), // 15 minutes
+    MAX: parseInt(process.env.RATE_LIMIT_MAX || "100"), // 100 requests per window
+  },
+};
