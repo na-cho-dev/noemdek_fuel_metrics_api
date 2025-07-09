@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { logger } from "../utils/logger";
 import { AppError } from "../errors/AppError";
 import { config } from "../config";
+import { ZodError } from "zod";
 
 /**
  * Global error handling middleware
@@ -51,6 +52,64 @@ export const errorHandler = (
       success: false,
       message: "Token expired",
       code: "TOKEN_EXPIRED",
+      timestamp: new Date().toISOString(),
+      path: req.url,
+      method: req.method,
+    });
+    return;
+  }
+
+  // Handle Zod validation errors
+  if (err instanceof ZodError) {
+    // Special case for completely empty request body
+    if (
+      err.errors.length === 1 &&
+      err.errors[0].path.length === 0 &&
+      err.errors[0].message === "Required"
+    ) {
+      // Get required fields based on the endpoint
+      let requiredFields: string[] = [];
+
+      if (req.originalUrl.includes("/api/auth/register")) {
+        requiredFields = ["name", "email", "password"];
+      } else if (req.originalUrl.includes("/api/auth/login")) {
+        requiredFields = ["email", "password"];
+      } else if (req.originalUrl.includes("/api/fuel")) {
+        requiredFields = [
+          "state",
+          "region",
+          "period",
+          "AGO",
+          "PMS",
+          "DPK",
+          "LPG",
+        ];
+      }
+
+      res.status(400).json({
+        success: false,
+        message: "Request body is required",
+        errors: requiredFields.map((field) => ({
+          path: field,
+          message: `${field} is required`,
+        })),
+        code: "VALIDATION_ERROR",
+        timestamp: new Date().toISOString(),
+        path: req.url,
+        method: req.method,
+      });
+      return;
+    }
+
+    // Regular Zod errors (partial data)
+    res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: err.errors.map((e) => ({
+        path: e.path.length ? e.path.join(".") : "requestBody",
+        message: e.message,
+      })),
+      code: "VALIDATION_ERROR",
       timestamp: new Date().toISOString(),
       path: req.url,
       method: req.method,

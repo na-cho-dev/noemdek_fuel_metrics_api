@@ -7,13 +7,13 @@ import morgan from "morgan";
 import { config } from "./config";
 import { logger } from "./utils/logger";
 import { connectDatabase } from "./config/database";
-import AuthMiddleware from "./middleware/auth.middleware";
 import { errorHandler } from "./middleware/error.middleware";
 
 // Import your routes here
+import authRouter from "./routes/auth.routes";
+import fuelPriceRouter from "./routes/fuel.price.routes";
+import fuelAnalysisRouter from "./routes/fuel.analysis.routes";
 
-// Initialize auth middleware
-const authMiddleware = new AuthMiddleware();
 export const app: Application = express();
 
 // Basic middlewares - order matters!
@@ -91,19 +91,25 @@ app.get("/health/detailed", async (req: Request, res: Response) => {
 });
 
 // API Info route
-app.get("/api/info", (req: Request, res: Response) => {
+app.get("/api-info", (req: Request, res: Response) => {
   res.status(200).json({
     name: "NOEMDEK Technical Interview",
     version: "1.0.0",
     description: "This is an API for the NOEMDEK technical interview.",
     endpoints: {
+      app: "/",
       health: "/health",
       detailedHealth: "/health/detailed",
       docs: "/api-docs",
-      info: "/api/info",
+      info: "/api-info",
     },
   });
 });
+
+// ===== API DOCUMENTATION ROUTE =====
+app.use("/api/auth", authRouter);
+app.use("/api/fuel", fuelPriceRouter);
+app.use("/api/fuel-analysis", fuelAnalysisRouter);
 
 // ===== END ROUTES SECTION =====
 
@@ -136,7 +142,16 @@ const startServer = async () => {
     // Start the server
     const server = app.listen(config.PORT, config.HOST, () => {
       logger.info(
-        `Server running at http://${config.HOST}:${config.PORT} in ${config.NODE_ENV} mode`
+        [
+          "🚀 Server started successfully!",
+          `Environment: ${config.NODE_ENV}`,
+          `Host: ${config.HOST}`,
+          `Port: ${config.PORT}`,
+          `Database: ${config.MONGODB_URI}`,
+          `Started at: ${new Date().toLocaleString()}`,
+          `API Root: http://${config.HOST}:${config.PORT}/`,
+          `API Docs: http://${config.HOST}:${config.PORT}/api-docs`,
+        ].join("\n")
       );
     });
 

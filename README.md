@@ -1,6 +1,6 @@
-# NOEMDEK Technical Interview API
+# NOEMDEK FUEL METRIC API
 
-A robust, production-ready Express.js REST API template designed for technical interviews and rapid backend development. This project demonstrates best practices in error handling, authentication, configuration, and logging, with a focus on maintainability and scalability.
+A robust, production-ready Express.js REST API template designed for fuel metric and rapid backend development. This project demonstrates best practices in error handling, authentication, configuration, and logging, with a focus on maintainability and scalability.
 
 ---
 

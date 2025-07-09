@@ -3,12 +3,10 @@ export type UUID = string;
 
 // Authenticated User Context
 export interface AuthenticatedUser {
-  userId: UUID;
+  id: UUID;
   email: string;
-  organizerId: string;
-  role: string;
-  permissions: string[];
-  firstName?: string;
-  lastName?: string;
-  isVerified?: boolean;
+  role?: string;
+  permissions?: string[];
+  name: string;
+  isVerified: boolean;
 }

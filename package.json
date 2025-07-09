@@ -21,12 +21,15 @@
     "test:e2e": "jest --config jest.e2e.config.js",
     "prebuild": "npm run clean",
     "prestart": "npm run build",
-    "validate": "npm run lint && npm run format:check && npm run test"
+    "validate": "npm run lint && npm run format:check && npm run test",
+    "seed:db": "ts-node scripts/importFuelData.ts",
+    "reset:db": "ts-node scripts/resetDatabase.ts"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^8.2.3",
@@ -46,6 +49,7 @@
   },
   "dependencies": {
     "@types/helmet": "^4.0.0",
+    "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
@@ -55,7 +59,9 @@
     "mongoose": "^8.16.2",
     "morgan": "^1.10.0",
     "redis": "^5.5.6",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "xlsx": "^0.18.5",
+    "zod": "^3.25.74"
   },
   "publishConfig": {
     "access": "public"
