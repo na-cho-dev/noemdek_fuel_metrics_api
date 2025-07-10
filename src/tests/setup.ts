@@ -7,11 +7,24 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { logger } from "../utils/logger";
+import fs from "fs";
+import path from "path";
 
 let mongoServer: MongoMemoryServer | null = null;
 
 // Setup before all tests across the entire test suite
 beforeAll(async () => {
+  const tmpDir = "/tmp";
+  fs.readdirSync(tmpDir)
+    .filter((f) => f.startsWith("mongodb-"))
+    .forEach((f) => {
+      try {
+        fs.rmSync(path.join(tmpDir, f), { recursive: true, force: true });
+      } catch (e) {
+        // Ignore errors
+      }
+    });
+
   try {
     console.log("🔧 Setting up test environment...");
 
@@ -66,16 +79,46 @@ afterAll(async () => {
   }
 }, 120000); // Increase timeout to 120 seconds
 
+// Clear all collections before each test to ensure clean state
+beforeEach(async () => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      const collections = mongoose.connection.collections;
+      const clearPromises = [];
+
+      for (const key in collections) {
+        const collection = collections[key];
+        clearPromises.push(collection.deleteMany({}));
+      }
+
+      // Wait for all collections to be cleared
+      await Promise.all(clearPromises);
+
+      // Wait to ensure operations are complete
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  } catch (error) {
+    console.error("❌ Failed to clear test data before test:", error);
+  }
+});
+
 // Clear all collections after each test to ensure test isolation
 afterEach(async () => {
   try {
     if (mongoose.connection.readyState === 1) {
       const collections = mongoose.connection.collections;
+      const clearPromises = [];
 
       for (const key in collections) {
         const collection = collections[key];
-        await collection.deleteMany({});
+        clearPromises.push(collection.deleteMany({}));
       }
+
+      // Wait for all collections to be cleared
+      await Promise.all(clearPromises);
+
+      // Additional wait to ensure MongoDB has time to complete all operations
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   } catch (error) {
     console.error("❌ Failed to clear test data:", error);

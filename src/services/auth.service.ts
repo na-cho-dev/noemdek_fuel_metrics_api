@@ -46,6 +46,9 @@ export class AuthService {
     const user = await UserService.findByEmail(data.email);
     if (!user) throw new AppError("Invalid credentials", 401);
 
+    logger.info("DB User", { password: user.password });
+    logger.info("Login User", { password: data.password });
+
     const isMatch = await bcrypt.compare(data.password, user.password);
     if (!isMatch) throw new AppError("Invalid credentials", 401);
 

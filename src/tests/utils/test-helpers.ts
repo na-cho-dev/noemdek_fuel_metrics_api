@@ -9,11 +9,21 @@ import { createTestApp } from "../test-app";
 export class TestHelpers {
   private static app = createTestApp();
 
+  // Generate a unique identifier for test data
+  static generateUniqueId() {
+    // Add process ID and additional entropy to ensure uniqueness across parallel test runs
+    return `${Date.now()}-${process.pid}-${Math.random()
+      .toString(36)
+      .substring(2, 15)}-${Math.random()
+      .toString(36)
+      .substring(2, 15)}-${performance.now().toString().replace(".", "")}`;
+  }
+
   // Helper to register a test user
   static async registerUser(
     userData = {
-      email: "test@example.com",
-      password: "password123",
+      email: `test.${this.generateUniqueId()}@example.com`,
+      password: "password123!",
       name: "Test User",
     }
   ): Promise<import("supertest").Response> {
@@ -27,21 +37,27 @@ export class TestHelpers {
   // Helper to login and get token
   static async loginUser(
     credentials = {
-      email: "test@example.com",
-      password: "password123",
+      email: `test.${this.generateUniqueId()}@example.com`,
+      password: "password123!",
     }
   ) {
+    // Generate unique email for this login attempt
+    const uniqueEmail = credentials.email.includes("@")
+      ? credentials.email
+      : `test.${this.generateUniqueId()}@example.com`;
+
     // First register the user
     await this.registerUser({
-      email: credentials.email,
+      email: uniqueEmail,
       password: credentials.password,
       name: "Test User",
     });
 
     // Then login
-    const response = await request(this.app)
-      .post("/api/auth/login")
-      .send(credentials);
+    const response = await request(this.app).post("/api/auth/login").send({
+      email: uniqueEmail,
+      password: credentials.password,
+    });
 
     return response.body.accessToken;
   }

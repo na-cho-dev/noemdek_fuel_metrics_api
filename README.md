@@ -20,6 +20,7 @@ A comprehensive REST API for analyzing and managing fuel price data across Niger
 - [Error Handling](#error-handling)
 - [Scripts](#scripts)
 - [Contributing](#contributing)
+- [Postman Collection](#postman-collection) <!-- Added new section -->
 
 ---
 
@@ -456,6 +457,27 @@ pnpm test:coverage
 # Run tests in watch mode
 pnpm test:watch
 ```
+
+---
+
+## Postman Collection
+
+A ready-to-use [Postman collection](./NOEMDEK_FUEL_METRICS_API_(v2.1).postman_collection.json) is included for easy API testing.
+
+### How to Use
+
+1. **Open Postman** (download from [https://www.postman.com/downloads/](https://www.postman.com/downloads/)).
+2. **Import the collection**:
+   - Click "Import" in Postman.
+   - Select the file: `NOEMDEK_FUEL_METRICS_API_(v2.1).postman_collection.json` from the project root.
+3. **Set the `baseUrl` variable**:
+   - The collection uses a `baseUrl` variable (default: `https://noemdek-fuel-metrics-api.onrender.com`).
+   - Change it to your local server if needed (e.g., `http://localhost:5000`).
+4. **Authorize requests**:
+   - The collection is pre-configured for Bearer token authentication.
+   - Update the token in the collection variables if you need to use a different user/session.
+5. **Run requests**:
+   - Use the organized folders to test authentication, fuel price, analytics, and retail data endpoints.
 
 ---
 

@@ -47,7 +47,11 @@ export const signToken = (
     ...(options || {}),
   };
 
-  return jwt.sign(payload, JWT_ACCESS_SECRET, jwtOptions);
+  // Add a random nonce to ensure uniqueness even for identical payloads
+  const nonce =
+    Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+
+  return jwt.sign({ ...payload, nonce }, JWT_ACCESS_SECRET, jwtOptions);
 };
 
 /**
@@ -68,7 +72,11 @@ export const signRefreshToken = (
     ...(options || {}),
   };
 
-  return jwt.sign({ userId }, JWT_REFRESH_SECRET, jwtOptions);
+  // Add a random nonce to ensure uniqueness even for identical payloads
+  const nonce =
+    Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+
+  return jwt.sign({ userId, nonce }, JWT_REFRESH_SECRET, jwtOptions);
 };
 
 /**

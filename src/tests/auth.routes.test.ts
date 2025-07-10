@@ -8,6 +8,12 @@ import { createTestApp } from "./test-app";
 
 const app = createTestApp();
 
+// Helper function to generate truly unique IDs
+const generateUniqueId = () => {
+  // Add process ID and additional entropy to ensure uniqueness across parallel test runs
+  return `${Date.now()}-${process.pid}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}-${performance.now().toString().replace('.', '')}`;
+};
+
 describe("Authentication API Routes", () => {
   describe("User Registration (POST /api/auth/register)", () => {
     describe("✅ Success Cases", () => {
@@ -253,73 +259,80 @@ describe("Authentication API Routes", () => {
 describe("User Login (POST /api/auth/login)", () => {
   describe("✅ Success Cases", () => {
     it("should successfully login with valid credentials and return authentication tokens", async () => {
-      // Create unique user for this test
-      const uniqueId = `${Date.now()}-${Math.random()
-        .toString(36)
-        .substr(2, 9)}`;
+      // Create unique user for this test with improved uniqueness
+      const uniqueId = generateUniqueId();
       const testUserCredentials = {
-        email: `loginuser-${uniqueId}@example.com`,
+        email: `logintest-${uniqueId}@example.com`,
         password: "password123!",
         name: "Login Test User",
       };
 
-      // Register user first
-      const regRes = await request(app)
-        .post("/api/auth/register")
-        .send(testUserCredentials);
-      expect(regRes.status).toBe(201);
+      // Register user first and ensure it's successful
+      let registrationRes;
+      try {
+        registrationRes = await request(app)
+          .post("/api/auth/register")
+          .send(testUserCredentials);
 
-      const loginData = {
-        email: testUserCredentials.email,
-        password: testUserCredentials.password,
-      };
+        // If registration failed, log the error and provide more details
+        if (registrationRes.status !== 201) {
+          console.error(
+            `Registration failed with status ${registrationRes.status}:`,
+            registrationRes.body
+          );
+          console.error(
+            `Attempted to register user with email: ${testUserCredentials.email}`
+          );
+          throw new Error(
+            `Registration failed: ${JSON.stringify(registrationRes.body)}`
+          );
+        }
 
-      const res = await request(app).post("/api/auth/login").send(loginData);
+        expect(registrationRes.status).toBe(201);
 
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual({
-        success: true,
-        accessToken: expect.any(String),
-        refreshToken: expect.any(String),
-        expiresIn: expect.any(Number),
-        user: {
-          id: expect.any(String),
+        // Add a small delay to ensure registration is fully processed
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        const loginData = {
           email: testUserCredentials.email,
-          name: testUserCredentials.name,
-          role: expect.any(String),
-        },
-      });
+          password: testUserCredentials.password,
+        };
 
-      // Verify token formats
-      expect(res.body.accessToken).toMatch(
-        /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/
-      );
-      expect(res.body.refreshToken).toMatch(
-        /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/
-      );
-    });
-  });
+        const res = await request(app).post("/api/auth/login").send(loginData);
 
-  describe("❌ Authentication Error Cases", () => {
-    let testUserCredentials: any;
+        // If login failed, provide detailed error information
+        if (res.status !== 200) {
+          console.error(`Login failed with status ${res.status}:`, res.body);
+          console.error(`Attempted to login with email: ${loginData.email}`);
+          console.error(`Registration response was:`, registrationRes.body);
+        }
 
-    beforeEach(async () => {
-      // Create unique user for each test
-      const uniqueId = `${Date.now()}-${Math.random()
-        .toString(36)
-        .substr(2, 9)}`;
-      testUserCredentials = {
-        email: `testuser-${uniqueId}@example.com`,
-        password: "password123!",
-        name: "Test User",
-      };
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+          success: true,
+          accessToken: expect.any(String),
+          refreshToken: expect.any(String),
+          expiresIn: expect.any(Number),
+          user: {
+            id: expect.any(String),
+            email: testUserCredentials.email,
+            name: testUserCredentials.name,
+            role: expect.any(String),
+          },
+        });
 
-      // Register a test user before each login test
-      const regRes = await request(app)
-        .post("/api/auth/register")
-        .send(testUserCredentials);
-
-      expect(regRes.status).toBe(201);
+        // Verify token formats
+        expect(res.body.accessToken).toMatch(
+          /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/
+        );
+        expect(res.body.refreshToken).toMatch(
+          /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/
+        );
+      } catch (error) {
+        // Log the error and fail the test
+        console.error("Error during login test:", error);
+        throw error;
+      }
     });
     it("should reject login with non-existent email", async () => {
       const uniqueId = `${Date.now()}-${Math.random()
@@ -344,8 +357,23 @@ describe("User Login (POST /api/auth/login)", () => {
     });
 
     it("should reject login with incorrect password", async () => {
+      // Register a new user to get a valid email
+      const uniqueId = generateUniqueId();
+      const userData = {
+        email: `wrongpass-${uniqueId}@example.com`,
+        password: "correctPassword123!",
+        name: "Wrong Password User",
+      };
+
+      // Register the user
+      const regRes = await request(app)
+        .post("/api/auth/register")
+        .send(userData);
+
+      expect(regRes.status).toBe(201);
+
       const invalidLogin = {
-        email: testUserCredentials.email,
+        email: userData.email,
         password: "wrongpassword123!",
       };
 
