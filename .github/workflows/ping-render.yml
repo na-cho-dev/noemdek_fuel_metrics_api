@@ -4,13 +4,18 @@ on:
   schedule:
     - cron: "*/5 * * * *" # Every 5 minutes
   workflow_dispatch:
-  push:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
     branches:
       - main
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    # Only run if CI passed or if manually triggered/scheduled
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     steps:
       - name: Ping Render Server
         id: ping

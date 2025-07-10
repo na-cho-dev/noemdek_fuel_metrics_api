@@ -104,8 +104,10 @@ app.use(errorHandler);
 // Start the server
 const startServer = async () => {
   try {
-    // Connect to database
-    await connectDatabase();
+    // Skip database connection during tests - test setup handles it
+    if (process.env.NODE_ENV !== "test") {
+      await connectDatabase();
+    }
 
     // Start the server
     const server = app.listen(config.PORT, config.HOST, () => {
@@ -131,20 +133,34 @@ const startServer = async () => {
     });
   } catch (error) {
     logger.error("Failed to start server:", error);
-    process.exit(1);
+    // Don't exit process during tests
+    if (process.env.NODE_ENV !== "test") {
+      process.exit(1);
+    } else {
+      throw error;
+    }
   }
 };
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
   logger.error("Uncaught Exception:", error);
-  process.exit(1);
+  // Don't exit process during tests
+  if (process.env.NODE_ENV !== "test") {
+    process.exit(1);
+  }
 });
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled Rejection:", { reason, promise });
-  process.exit(1);
+  // Don't exit process during tests
+  if (process.env.NODE_ENV !== "test") {
+    process.exit(1);
+  }
 });
 
-startServer();
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}

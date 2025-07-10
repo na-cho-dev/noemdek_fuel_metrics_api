@@ -1,4 +1,4 @@
-module.exports = {
+const config: any = {
   preset: "ts-jest",
   testEnvironment: "node",
   testMatch: ["**/tests/**/*.test.ts"],
@@ -19,7 +19,6 @@ module.exports = {
   detectOpenHandles: true,
   forceExit: true,
   maxWorkers: 1,
-  // Add CI-specific configurations
   verbose: true,
   collectCoverage: true,
   coverageThreshold: {
@@ -30,17 +29,18 @@ module.exports = {
       statements: 65,
     },
   },
-  // Generate JUnit XML for CI reporting (only in CI)
-  ...(process.env.CI && {
-    reporters: [
-      "default",
-      [
-        "jest-junit",
-        {
-          outputDirectory: "coverage",
-          outputName: "junit.xml",
-        },
-      ],
-    ],
-  }),
+  reporters: ["default"],
 };
+
+// Only add jest-junit reporter in CI environment
+if (process.env.CI) {
+  config.reporters.push([
+    "jest-junit",
+    {
+      outputDirectory: "coverage",
+      outputName: "junit.xml",
+    },
+  ]);
+}
+
+module.exports = config;
