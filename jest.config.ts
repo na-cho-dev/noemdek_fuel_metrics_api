@@ -31,14 +31,16 @@ module.exports = {
     },
   },
   // Generate JUnit XML for CI reporting (only in CI)
-  reporters: process.env.CI ? [
-    "default",
-    [
-      "jest-junit",
-      {
-        outputDirectory: "coverage",
-        outputName: "junit.xml",
-      },
+  ...(process.env.CI && {
+    reporters: [
+      "default",
+      [
+        "jest-junit",
+        {
+          outputDirectory: "coverage",
+          outputName: "junit.xml",
+        },
+      ],
     ],
-  ] : ["default"],
+  }),
 };
