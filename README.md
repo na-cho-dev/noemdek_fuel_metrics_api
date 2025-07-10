@@ -404,6 +404,48 @@ Tests are organized into several categories:
 # Run all tests
 pnpm test
 
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Run only unit tests
+pnpm test:unit
+
+# Run only integration tests (routes tests)
+pnpm test:integration
+```
+
+### Test Environment
+
+Tests use an in-memory MongoDB server via `mongodb-memory-server` to provide isolation between test runs. This ensures tests don't interfere with your development or production databases.
+
+### Test Best Practices
+
+To ensure consistent and reliable test execution:
+
+1. **Unique Test Data**: Always use unique identifiers (emails, usernames, etc.) for test data to prevent conflicts between test runs. The auth tests use a combination of timestamps and random strings to create unique emails:
+   ```typescript
+   const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+   const userData = {
+     email: `user-${uniqueId}@example.com`,
+     // other fields...
+   };
+   ```
+
+2. **Test Isolation**: Each test runs with its own data to prevent interference between tests.
+
+3. **Data Cleanup**: The test environment cleans up data after all tests complete.
+
+4. **TypeScript Integration**: The project is configured to recognize Jest globals automatically through tsconfig.json, eliminating the need for explicit imports.
+
+### Running Tests
+
+```bash
+# Run all tests
+pnpm test
+
 # Run specific test suites
 pnpm test:unit
 pnpm test:integration
