@@ -6,7 +6,10 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "prebuild": "pnpm run clean",
+    "clean": "rm -rf dist",
     "build:watch": "tsc --watch",
+    "prestart": "pnpm run build",
     "start": "node dist/app.js",
     "start:prod": "NODE_ENV=production node dist/app.js",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
@@ -21,9 +24,7 @@
     "test:e2e": "jest --config jest.e2e.config.js",
     "test:unit": "jest --testPathPattern='src/tests/.*\\.test\\.ts$'",
     "test:integration": "jest --testPathPattern='src/tests/.*routes.*\\.test\\.ts$'",
-    "prebuild": "npm run clean",
-    "prestart": "npm run build",
-    "validate": "npm run lint && npm run format:check && npm run test",
+    "validate": "pnpm run lint && pnpm run format:check && pnpm run test",
     "seed:db": "ts-node scripts/import-fuel-data.ts",
     "reset:db": "ts-node scripts/reset-database.ts"
   },
