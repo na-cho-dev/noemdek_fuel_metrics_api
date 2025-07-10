@@ -39,6 +39,9 @@ if (process.env.CI) {
     {
       outputDirectory: "coverage",
       outputName: "junit.xml",
+      usePathForSuiteName: true,
+      classNameTemplate: "{classname}",
+      titleTemplate: "{title}",
     },
   ]);
 }

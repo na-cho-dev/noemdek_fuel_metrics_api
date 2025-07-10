@@ -8,12 +8,7 @@ export const connectDatabase = async (): Promise<void> => {
     logger.info("MongoDB Connected");
   } catch (error) {
     logger.error("Database connection failed:", error);
-    // Don't exit process during tests
-    if (process.env.NODE_ENV !== "test") {
-      process.exit(1);
-    } else {
-      throw error;
-    }
+    process.exit(1);
   }
 };
 

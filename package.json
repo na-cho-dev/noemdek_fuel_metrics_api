@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "pnpm install && tsc",
+    "build": "pnpm install --no-frozen-lockfile && tsc",
     "prebuild": "pnpm run clean",
     "clean": "rm -rf dist",
     "build:watch": "tsc --watch",

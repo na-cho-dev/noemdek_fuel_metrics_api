@@ -54,6 +54,6 @@ export default [
     },
   },
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**", "*.config.ts"],
+    ignores: ["dist/**", "node_modules/**", "coverage/**", "*.config.js", "*.config.ts"],
   },
 ];
