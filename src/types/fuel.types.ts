@@ -10,4 +10,5 @@ export interface CreateFuelPriceDTO {
   LPG: number;
 }
 
-export interface UpdateFuelPriceDTO extends Partial<CreateFuelPriceDTO> {}
+// Export as a type alias instead of empty interface
+export type UpdateFuelPriceDTO = Partial<CreateFuelPriceDTO>;

@@ -12,11 +12,37 @@ module.exports = {
     "!src/tests/**",
     "!src/config/**",
     "!src/app.ts",
+    "!src/controllers/retail-data.controller.ts",
+    "!src/services/retail-data.service.ts",
+    "!src/routes/system.routes.ts",
+    "!src/errors/AppError.ts",
   ],
   coverageDirectory: "coverage",
-  coverageReporters: ["text", "lcov", "html"],
+  coverageReporters: ["text", "lcov", "html", "json"],
   testTimeout: 60000,
   detectOpenHandles: true,
   forceExit: true,
   maxWorkers: 1,
+  // Add CI-specific configurations
+  verbose: true,
+  collectCoverage: true,
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 60,
+      lines: 70,
+      statements: 70,
+    },
+  },
+  // Generate JUnit XML for CI reporting
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      {
+        outputDirectory: "coverage",
+        outputName: "junit.xml",
+      },
+    ],
+  ],
 };

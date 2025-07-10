@@ -308,6 +308,7 @@ The API includes comprehensive Swagger documentation available at `/api-docs` wh
 
 #### Accessing Documentation:
 - **Local Development**: [http://localhost:3300/api-docs](http://localhost:3300/api-docs)
+- **Live Production**: [https://noemdek-fuel-metrics-api.onrender.com/api-docs](https://noemdek-fuel-metrics-api.onrender.com/api-docs)
 - **Production**: Available at your production domain `/api-docs`
 
 #### Configuration:

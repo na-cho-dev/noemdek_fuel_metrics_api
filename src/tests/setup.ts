@@ -20,7 +20,7 @@ beforeAll(async () => {
     .forEach((f) => {
       try {
         fs.rmSync(path.join(tmpDir, f), { recursive: true, force: true });
-      } catch (e) {
+      } catch {
         // Ignore errors
       }
     });
