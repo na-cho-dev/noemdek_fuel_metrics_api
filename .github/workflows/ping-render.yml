@@ -13,7 +13,7 @@ jobs:
         id: ping
         run: |
           echo "Pinging Render server..."
-          STATUS=$(curl -s -o response.txt -w "%{http_code}" https://your-app.onrender.com/health)
+          STATUS=$(curl -s -o response.txt -w "%{http_code}" https://noemdek-fuel-metrics-api.onrender.com/health)
           echo "HTTP status: $STATUS"
           echo "Response:"
           cat response.txt
