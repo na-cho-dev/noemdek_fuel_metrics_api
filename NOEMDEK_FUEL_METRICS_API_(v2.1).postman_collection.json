@@ -955,9 +955,9 @@
 	],
 	"variable": [
 		{
-			"key": "baseUrl",
-			"value": "http://localhost:3300",
-			"type": "string"
-		}
+      "key": "baseUrl",
+      "value": "https://noemdek-fuel-metrics-api.onrender.com",
+      "type": "string"
+    }
 	]
 }
