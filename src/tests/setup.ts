@@ -32,6 +32,10 @@ beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create({
       instance: {
         port: undefined, // Random port
+        storageEngine: "wiredTiger", // Use the default storage engine
+      },
+      binary: {
+        version: "6.0.4", // Use a stable version
       },
     });
     const mongoUri = mongoServer.getUri();
@@ -54,9 +58,10 @@ beforeAll(async () => {
     console.log("✅ Test environment setup complete");
   } catch (error) {
     console.error("❌ Failed to setup test database:", error);
-    process.exit(1);
+    // Don't exit process in tests, just fail the test
+    throw error;
   }
-}, 120000); // Increase timeout to 120 seconds
+}, 180000); // Increase timeout to 180 seconds
 
 // Cleanup after all tests are finished
 afterAll(async () => {

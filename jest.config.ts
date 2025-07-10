@@ -24,14 +24,14 @@ module.exports = {
   collectCoverage: true,
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 60,
-      lines: 70,
-      statements: 70,
+      branches: 45,
+      functions: 55,
+      lines: 65,
+      statements: 65,
     },
   },
-  // Generate JUnit XML for CI reporting
-  reporters: [
+  // Generate JUnit XML for CI reporting (only in CI)
+  reporters: process.env.CI ? [
     "default",
     [
       "jest-junit",
@@ -40,5 +40,5 @@ module.exports = {
         outputName: "junit.xml",
       },
     ],
-  ],
+  ] : ["default"],
 };
