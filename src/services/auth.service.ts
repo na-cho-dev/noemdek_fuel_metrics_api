@@ -3,11 +3,14 @@ import { CreateUserDTO, LoginUserDTO } from "../types/auth.types";
 import UserService from "./user.service";
 import { AppError } from "../errors/AppError";
 import { generateTokens, verifyRefreshToken } from "../utils/jwt";
-import { RefreshTokenService } from "./refreshToken.service";
+import { RefreshTokenService } from "./refresh-token.service";
 import jwt from "jsonwebtoken";
 import logger from "../utils/logger";
 
 export class AuthService {
+  /**
+   * Registers a new user and generates tokens.
+   */
   static async registerUser(data: CreateUserDTO) {
     const existing = await UserService.findByEmail(data.email);
     if (existing) throw new AppError("Email already in use", 400);
@@ -36,6 +39,9 @@ export class AuthService {
     return { user, tokens };
   }
 
+  /**
+   * Logs in a user and generates tokens.
+   */
   static async loginUser(data: LoginUserDTO) {
     const user = await UserService.findByEmail(data.email);
     if (!user) throw new AppError("Invalid credentials", 401);
@@ -63,6 +69,9 @@ export class AuthService {
     return { user, tokens };
   }
 
+  /**
+   * Refreshes the access and refresh tokens using the provided refresh token.
+   */
   static async refreshTokens(refreshToken: string) {
     // Verify token
     const { userId } = verifyRefreshToken(refreshToken);
@@ -100,6 +109,10 @@ export class AuthService {
     return { user, tokens };
   }
 
+  /**
+   * Logs out a user by revoking their refresh token.
+   * @param refreshToken - The refresh token to revoke.
+   */
   static async logout(refreshToken: string) {
     try {
       await RefreshTokenService.revokeToken(refreshToken);

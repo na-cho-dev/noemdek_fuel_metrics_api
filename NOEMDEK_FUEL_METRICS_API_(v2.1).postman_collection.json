@@ -1,0 +1,963 @@
+{
+	"info": {
+		"_postman_id": "3f14f0f5-f1e6-4901-ae97-46419d531534",
+		"name": "NOEMDEK FUEL METRICS API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38046602"
+	},
+	"item": [
+		{
+			"name": "App",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Detail Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/detailed",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health",
+								"detailed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api-info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api-info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "App Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth API",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"nacho@gmail.com\",\n\t\"name\": \"Fortune\",\n\t\"password\": \"Kepler.369\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"nacho@gmail.com\",\n\t\"password\": \"Kepler.369\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODZmNzQ2NjFjYzYwNTc0YmI0NjhjYjAiLCJpYXQiOjE3NTIxMzQ3OTcsImV4cCI6MTc1MjczOTU5N30.lo_MASKaOosLY4645APW57dqtOlCY1x2ihMpmRrUHr8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODZjZGQwYTYyMGQ0Yzk3Mjc1Y2U2YWMiLCJpYXQiOjE3NTE5NjU3MjIsImV4cCI6MTc1MjU3MDUyMn0.N4-YN_O4ZIQfyJms1eQBoODbW5xF5Yt6h7BwJqH2Z0g\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fuel Price API",
+			"item": [
+				{
+					"name": "Create Fuel Record",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"state\": \"Abia\",\n  \"period\": \"2024-11-30\",\n  \"AGO\": 1205.63,\n  \"PMS\": 1159.38,\n  \"DPK\": 1342.86,\n  \"LPG\": 1300,\n  \"region\": \"South East\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Fuel Record",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "abia",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": "PMS",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "desc",
+									"disabled": true
+								},
+								{
+									"key": "product",
+									"value": "PMS",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "1200",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fuel Filters",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel/filters",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"filters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fuel Record By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "686f73be2e022e83c32e5e16"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Fuel Record",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Fuel Record",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"state\": \"Cross River\",\n  \"region\": \"South East\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "686f73be2e022e83c32e5e15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Export Fuel Record",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel/export",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel",
+								"export"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "xlsx",
+									"description": "Export as Excel format, Default is CSV format",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fuel Analysis API",
+			"item": [
+				{
+					"name": "Get Summary",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/summary",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Time National Avg Fuel Prices",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/average/all-time",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"average",
+								"all-time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Avg Fuel Prices by Region",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/average-by-region",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"average-by-region"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Top States",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/top/:product?order=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"top",
+								":product"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "desc"
+								}
+							],
+							"variable": [
+								{
+									"key": "product",
+									"value": "AGO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fuel Price Trends",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/trends?product=PMS&state=Abia&range=all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"trends"
+							],
+							"query": [
+								{
+									"key": "product",
+									"value": "PMS"
+								},
+								{
+									"key": "state",
+									"value": "Abia"
+								},
+								{
+									"key": "range",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fuel Price Mini Trends",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/mini-trend?product=PMS&state=Abia",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"mini-trend"
+							],
+							"query": [
+								{
+									"key": "product",
+									"value": "PMS"
+								},
+								{
+									"key": "state",
+									"value": "Abia"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Price Change",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/price-change?state=Abia&product=PMS&range=220d",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"price-change"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "Abia"
+								},
+								{
+									"key": "product",
+									"value": "PMS"
+								},
+								{
+									"key": "range",
+									"value": "220d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Weekly Report",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/fuel-analysis/weekly-report?product=PMS",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fuel-analysis",
+								"weekly-report"
+							],
+							"query": [
+								{
+									"key": "product",
+									"value": "PMS"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Retail Data API",
+			"item": [
+				{
+					"name": "Single Retail Record Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fillingStation\": \"Total\",\n  \"state\": \"Lagos\",\n  \"lga\": \"Ikeja\",\n  \"city\": \"Ikeja\",\n  \"address\": \"32 Allen Avenue\",\n  \"product\": \"PMS\",\n  \"retailPrice\": 1125,\n  \"priceDate\": \"2025-07-08\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/retail-data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"retail-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk File Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/retail-data/bulk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"retail-data",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Retail Data",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/retail-data?page=1&limit=10&search=Abia&sortBy=price&order=desc&product=PMS",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"retail-data"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "Abia"
+								},
+								{
+									"key": "sortBy",
+									"value": "price"
+								},
+								{
+									"key": "order",
+									"value": "desc"
+								},
+								{
+									"key": "product",
+									"value": "PMS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Retail Data Upload",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/retail-data/:id/approve",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"retail-data",
+								":id",
+								"approve"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Retail Data Upload Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/retail-data/:id/reject",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"retail-data",
+								":id",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODZmNzQ2NjFjYzYwNTc0YmI0NjhjYjAiLCJlbWFpbCI6Im5hY2hvQGdtYWlsLmNvbSIsInJvbGUiOiJhbmFseXN0IiwiaWF0IjoxNzUyMTM0NzU4LCJleHAiOjE3NTIyMjExNTh9.1lyuNnnH4VtrJOqc8Sa_ggmj2HHq7-iHaPWNv_uoRmM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3300",
+			"type": "string"
+		}
+	]
+}

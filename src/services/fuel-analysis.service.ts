@@ -1,9 +1,14 @@
 import { AppError } from "../errors/AppError";
 import FuelModel from "../models/fuel.model";
-import { FuelProduct } from "../types/enums";
-import { getStartDateFromRange } from "../utils/dateRange";
+import { FuelProduct, FUEL_PRODUCTS } from "../types/enums";
+import { getStartDateFromRange } from "../utils/date-range";
 
 export class FuelAnalysisService {
+  /**
+   * Get the summary of fuel prices with changes.
+   * @param product - The fuel product to analyze.
+   * @returns An object containing the current and previous prices, change, and trend direction.
+   */
   static async getSummaryWithChange(product: FuelProduct) {
     const [latest, previous] = await FuelModel.find({
       [product]: { $ne: null },
@@ -32,6 +37,10 @@ export class FuelAnalysisService {
     };
   }
 
+  /**
+   * Get the all-time national average fuel prices.
+   * @return An object containing the average prices for each fuel product.
+   */
   static async getAllTimeNationalAverage() {
     return FuelModel.aggregate([
       {
@@ -47,6 +56,10 @@ export class FuelAnalysisService {
     ]);
   }
 
+  /**
+   * Get the average fuel prices by region.
+   * @return An array of objects containing the average prices for each region.
+   */
   static async getAverageByRegion() {
     return FuelModel.aggregate([
       {
@@ -71,14 +84,19 @@ export class FuelAnalysisService {
     ]);
   }
 
+  /**
+   * Get the top states by fuel product price.
+   * @param product - The fuel product to analyze.
+   * @param order - The sort order (asc or desc).
+   * @returns An array of objects containing the top states and their average prices.
+   */
   static async getTopStatesByProduct(
     product: string,
     order: "asc" | "desc" = "desc"
   ) {
     const sortOrder = order === "asc" ? 1 : -1;
-    const validProducts = ["AGO", "PMS", "DPK", "LPG"];
 
-    if (!validProducts.includes(product)) {
+    if (!FUEL_PRODUCTS.includes(product as FuelProduct)) {
       throw new AppError("Invalid product type", 400);
     }
 
@@ -95,6 +113,14 @@ export class FuelAnalysisService {
     ]);
   }
 
+  /**
+   * Get fuel price trends for a specific state and product.
+   * @param product - The fuel product to analyze.
+   * @param state - The state to filter by.
+   * @param region - The region to filter by (optional).
+   * @param range - The date range for the trend (default is "30d").
+   * @returns An array of objects containing the date and average price.
+   */
   static async getTrends(
     product: string,
     state?: string,
@@ -129,6 +155,12 @@ export class FuelAnalysisService {
     return trend;
   }
 
+  /**
+   * Get the mini trend for a specific state and product.
+   * @param state - The state to filter by.
+   * @param product - The fuel product to analyze.
+   * @returns An array of objects containing the date and price for the last 7 days.
+   */
   static async getMiniTrend(state: string, product: string) {
     const trendData = await FuelModel.find({ state })
       .sort({ period: -1 })
@@ -143,6 +175,13 @@ export class FuelAnalysisService {
     }));
   }
 
+  /**
+   * Get the price change for a specific fuel product.
+   * @param state - The state to filter by.
+   * @param product - The fuel product to analyze.
+   * @param range - The date range for the analysis (in days).
+   * @returns An object containing the current price, previous price, change, and percentage change.
+   */
   static async getPriceChange(state: string, product: string, range: number) {
     const today = new Date();
     const pastDate = new Date(today);
@@ -174,9 +213,13 @@ export class FuelAnalysisService {
     };
   }
 
+  /**
+   * Get the weekly report for a specific fuel product.
+   * @param product - The fuel product to analyze.
+   * @returns An array of objects containing the state, current price, previous price, change, percentage change, and trend.
+   */
   static async getWeeklyReport(product: string) {
-    const validProducts = ["PMS", "AGO", "DPK", "LPG"];
-    if (!validProducts.includes(product)) return [];
+    if (!FUEL_PRODUCTS.includes(product as FuelProduct)) return [];
 
     const states = await FuelModel.distinct("state");
 

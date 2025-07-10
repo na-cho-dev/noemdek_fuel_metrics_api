@@ -47,6 +47,32 @@ export const errorHandler = (
     return;
   }
 
+  // Handle Multer errors
+  if (err.name === "MulterError") {
+    res.status(400).json({
+      success: false,
+      message: "Multer error",
+      code: "MULTER_ERROR",
+      timestamp: new Date().toISOString(),
+      path: req.url,
+      method: req.method,
+    });
+    return;
+  }
+
+  // Handle Cast errors
+  if (err.name === "CastError") {
+    res.status(400).json({
+      success: false,
+      message: "Cast error",
+      code: "CAST_ERROR",
+      timestamp: new Date().toISOString(),
+      path: req.url,
+      method: req.method,
+    });
+    return;
+  }
+
   if (err.name === "TokenExpiredError") {
     res.status(401).json({
       success: false,

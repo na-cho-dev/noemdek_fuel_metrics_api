@@ -1,4 +1,3 @@
-// src/utils/logger.ts
 import winston from "winston";
 import { config } from "../config";
 
@@ -37,7 +36,7 @@ const createLogger = () => {
             colorize({ all: true }),
             timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
             errors({ stack: true }),
-            simple(),
+            simple()
           )
         : combine(timestamp(), errors({ stack: true }), json()),
     }),

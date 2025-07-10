@@ -1,9 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthService } from "../services/auth.service";
 import { LoginSchema, RegisterSchema } from "../validation/auth.schema";
 import { AppError } from "../errors/AppError";
+import { AuthService } from "../services";
 
 export class AuthController {
+  /**
+   * Registers a new user and returns access and refresh tokens.
+   * @param req - Express request object
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   */
   static async register(req: Request, res: Response, next: NextFunction) {
     try {
       const parsed = RegisterSchema.parse(req.body);
@@ -26,6 +32,12 @@ export class AuthController {
     }
   }
 
+  /**
+   * Logs in a user and returns access and refresh tokens.
+   * @param req - Express request object
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   */
   static async login(req: Request, res: Response, next: NextFunction) {
     try {
       const parsed = LoginSchema.parse(req.body);
@@ -50,10 +62,21 @@ export class AuthController {
     }
   }
 
+  /**
+   * Returns the current authenticated user.
+   * @param req - Express request object
+   * @param res - Express response object
+   */
   static async currentUser(req: Request, res: Response) {
     res.json({ user: req.user });
   }
 
+  /**
+   * Refreshes access and refresh tokens using the provided refresh token.
+   * @param req - Express request object
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   */
   static async refresh(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.body;
@@ -81,6 +104,12 @@ export class AuthController {
     }
   }
 
+  /**
+   * Logs out a user and revokes the refresh token.
+   * @param req - Express request object
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   */
   static async logout(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.body;

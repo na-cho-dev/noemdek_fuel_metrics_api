@@ -5,4 +5,18 @@ module.exports = {
   moduleFileExtensions: ["ts", "js", "json"],
   roots: ["<rootDir>/src"],
   coveragePathIgnorePatterns: ["/node_modules/", "/dist/"],
+  setupFilesAfterEnv: ["<rootDir>/src/tests/setup.ts"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/**/*.d.ts",
+    "!src/tests/**",
+    "!src/config/**",
+    "!src/app.ts",
+  ],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"],
+  testTimeout: 60000,
+  detectOpenHandles: true,
+  forceExit: true,
+  maxWorkers: 1,
 };

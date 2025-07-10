@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { FuelAnalysisService } from "../services/fuel.analysis.service";
-import { FuelProduct } from "../types/enums";
+import { NextFunction, Request, Response } from "express";
+import { FuelProduct, FUEL_PRODUCTS } from "../types/enums";
+import { FuelAnalysisService } from "../services";
 
 export class FuelAnalysisController {
   /**
@@ -8,32 +8,36 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getSummary(req: Request, res: Response) {
-    const products: FuelProduct[] = [
-      FuelProduct.PMS,
-      FuelProduct.AGO,
-      FuelProduct.DPK,
-      FuelProduct.LPG,
-    ];
-    const summary = await Promise.all(
-      products.map((product) =>
-        FuelAnalysisService.getSummaryWithChange(product)
-      )
-    );
+  static async getSummary(req: Request, res: Response, next: NextFunction) {
+    try {
+      const products: FuelProduct[] = FUEL_PRODUCTS;
+      const summary = await Promise.all(
+        products.map((product) =>
+          FuelAnalysisService.getSummaryWithChange(product)
+        )
+      );
 
-    res.status(200).json({
-      success: true,
-      data: summary.filter(Boolean),
-    });
+      res.status(200).json({
+        success: true,
+        data: summary.filter(Boolean),
+      });
+    } catch (error: any) {
+      next(error)
+    }
   }
+
   /**
    * Get the national average fuel prices.
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getAllTimeNationalAverage(req: Request, res: Response) {
-    const data = await FuelAnalysisService.getAllTimeNationalAverage();
-    res.status(200).json({ success: true, data: data[0] });
+  static async getAllTimeNationalAverage(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await FuelAnalysisService.getAllTimeNationalAverage();
+      res.status(200).json({ success: true, data: data[0] });
+    } catch (error: any) {
+      next(error)
+    }
   }
 
   /**
@@ -41,9 +45,13 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getAverageByRegion(req: Request, res: Response) {
-    const data = await FuelAnalysisService.getAverageByRegion();
-    res.status(200).json({ success: true, data });
+  static async getAverageByRegion(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await FuelAnalysisService.getAverageByRegion();
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      next(error)
+    }
   }
 
   /**
@@ -51,14 +59,18 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getTopStatesByProduct(req: Request, res: Response) {
-    const { product } = req.params;
-    const { order = "desc" } = req.query;
-    const data = await FuelAnalysisService.getTopStatesByProduct(
-      product.toUpperCase(),
-      order === "asc" ? "asc" : "desc"
-    );
-    res.status(200).json({ success: true, data });
+  static async getTopStatesByProduct(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { product } = req.params;
+      const { order = "desc" } = req.query;
+      const data = await FuelAnalysisService.getTopStatesByProduct(
+        product.toUpperCase(),
+        order === "asc" ? "asc" : "desc"
+      );
+      res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      next(error)
+    }
   }
 
   /**
@@ -66,39 +78,44 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getTrends(req: Request, res: Response) {
-    const { product, state, region, range } = req.query as {
-      product: string;
-      state: string;
-      region: string;
-      range: string;
-    };
+  static async getTrends(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { product, state, region, range } = req.query as {
+        product: string;
+        state: string;
+        region: string;
+        range: string;
+      };
 
-    const validProducts = ["PMS", "AGO", "DPK", "LPG"];
-    if (!product || !validProducts.includes(product)) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid or missing product type",
-      });
-    }
+      if (!product || !FUEL_PRODUCTS.includes(product as FuelProduct)) {
+        res.status(400).json({
+          success: false,
+          message: "Invalid or missing product type",
+        });
+      }
 
-    const trend = await FuelAnalysisService.getTrends(
-      product,
-      state,
-      region,
-      range ?? "30d"
-    );
-
-    res.status(200).json({
-      success: true,
-      filters: {
+      const trend = await FuelAnalysisService.getTrends(
         product,
-        state: state || null,
-        region: region || null,
-        range: range || "30d",
-      },
-      trend,
-    });
+        state,
+        region,
+        range ?? "30d"
+      );
+
+      res.status(200).json({
+        success: true,
+        data: {
+          filters: {
+            product,
+            state: state || null,
+            region: region || null,
+            range: range || "30d",
+          },
+          trend,
+        },
+      });
+    } catch (error: any) {
+      next(error)
+    }
   }
 
   /**
@@ -106,79 +123,112 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getMiniTrend(req: Request, res: Response) {
-    const { state, product } = req.query as {
-      state: string;
-      product: string;
-    };
+  static async getMiniTrend(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { state, product } = req.query as {
+        state: string;
+        product: string;
+      };
 
-    if (!state || !product)
-      res
-        .status(400)
-        .json({ success: false, message: "state and product are required" });
+      if (!state || !product)
+        res
+          .status(400)
+          .json({ success: false, message: "state and product are required" });
 
-    const validProducts = ["PMS", "AGO", "DPK", "LPG"];
-    if (!validProducts.includes(product))
-      res.status(400).json({ success: false, message: "Invalid product type" });
+      if (!FUEL_PRODUCTS.includes(product as FuelProduct))
+        res
+          .status(400)
+          .json({ success: false, message: "Invalid product type" });
 
-    const trend = await FuelAnalysisService.getMiniTrend(state, product);
-    res.status(200).json({
-      success: true,
-      state,
-      product,
-      trend,
-    });
-  }
-
-  static async getPriceChange(req: Request, res: Response) {
-    const { state, product, range = "7d" } = req.query;
-
-    if (!state || !product) {
-      res
-        .status(400)
-        .json({ success: false, message: "state and product are required" });
-    }
-
-    const validProducts = ["PMS", "AGO", "DPK", "LPG"];
-    if (!validProducts.includes(product as string)) {
-      res.status(400).json({ success: false, message: "Invalid product type" });
-    }
-
-    const days = parseInt((range as string).replace("d", "")) || 7;
-
-    const result = await FuelAnalysisService.getPriceChange(
-      state as string,
-      product as string,
-      days
-    );
-
-    if (!result) {
-      res.status(404).json({
-        success: false,
-        message: "Insufficient data to calculate change",
+      const trend = await FuelAnalysisService.getMiniTrend(state, product);
+      res.status(200).json({
+        success: true,
+        data: {
+          state,
+          product,
+          trend,
+        },
       });
+    } catch (error: any) {
+      next(error)
     }
-
-    res.status(200).json({
-      success: true,
-      state,
-      product,
-      range,
-      ...result,
-    });
   }
 
-  static async getWeeklyReport(req: Request, res: Response) {
-    const product = req.query.product as string;
+  /**
+   * Get the price change for a specific product in a state over a given range.
+   * @param req - Express request object
+   * @param res - Express response object
+   */
+  static async getPriceChange(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { state, product, range = "7d" } = req.query;
 
-    if (!product)
-      res.status(400).json({ success: false, message: "Product is required" });
+      if (!state || !product) {
+        res
+          .status(400)
+          .json({ success: false, message: "state and product are required" });
+      }
 
-    const report = await FuelAnalysisService.getWeeklyReport(product);
-    res.status(200).json({
-      success: true,
-      product,
-      report,
-    });
+      const validProducts: FuelProduct[] = FUEL_PRODUCTS;
+      if (!validProducts.includes(product as FuelProduct)) {
+        res
+          .status(400)
+          .json({ success: false, message: "Invalid product type" });
+      }
+
+      const days = parseInt((range as string).replace("d", "")) || 7;
+
+      const result = await FuelAnalysisService.getPriceChange(
+        state as string,
+        product as string,
+        days
+      );
+
+      if (!result) {
+        res.status(404).json({
+          success: false,
+          message: "Insufficient data to calculate change",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          state,
+          product,
+          range,
+          ...result,
+        },
+      });
+    } catch (error: any) {
+      next(error)
+    }
+  }
+
+  /**
+   * Get the weekly report for a specific product.
+   * @param req - Express request object
+   * @param res - Express response object
+   */
+  static async getWeeklyReport(req: Request, res: Response, next: NextFunction) {
+    try {
+      const product = req.query.product as string;
+
+      if (!product)
+        res
+          .status(400)
+          .json({ success: false, message: "Product is required" });
+
+      const report = await FuelAnalysisService.getWeeklyReport(product);
+      res.status(200).json({
+        success: true,
+        data: {
+          product,
+          report,
+        },
+      });
+    } catch (error: any) {
+      next(error)
+    }
   }
 }

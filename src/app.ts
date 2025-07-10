@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
+import fs from "fs";
+import path from "path";
 
 import { config } from "./config";
 import { logger } from "./utils/logger";
@@ -10,9 +12,17 @@ import { connectDatabase } from "./config/database";
 import { errorHandler } from "./middleware/error.middleware";
 
 // Import your routes here
-import authRouter from "./routes/auth.routes";
-import fuelPriceRouter from "./routes/fuel.price.routes";
-import fuelAnalysisRouter from "./routes/fuel.analysis.routes";
+import {
+  authRouter,
+  fuelPriceRouter,
+  fuelAnalysisRouter,
+  retailDataRouter,
+} from "./routes";
+
+const uploadsDir = path.join(__dirname, "..", "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 export const app: Application = express();
 
@@ -110,6 +120,7 @@ app.get("/api-info", (req: Request, res: Response) => {
 app.use("/api/auth", authRouter);
 app.use("/api/fuel", fuelPriceRouter);
 app.use("/api/fuel-analysis", fuelAnalysisRouter);
+app.use("/api/retail-data", retailDataRouter);
 
 // ===== END ROUTES SECTION =====
 

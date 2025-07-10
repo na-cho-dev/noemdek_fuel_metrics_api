@@ -123,12 +123,12 @@ export const generateTokens = (user: {
   role?: string;
 }): TokenResponse => {
   const accessToken = signToken({
-    userId: user._id.toString(),
+    userId: user._id,
     email: user.email,
     role: user.role,
   });
 
-  const refreshToken = signRefreshToken(user._id.toString());
+  const refreshToken = signRefreshToken(user._id);
 
   // Calculate expiration in seconds
   const decoded = jwt.decode(accessToken) as JwtPayload;

@@ -13,6 +13,12 @@ fuelPriceRouter.post("/", FuelPriceController.create);
 // Get all fuel price records (paginated)
 fuelPriceRouter.get("/", FuelPriceController.getAll);
 
+// Get filter options for fuel prices
+fuelPriceRouter.get("/filters", FuelPriceController.getFilters);
+
+// Export fuel price data
+fuelPriceRouter.get("/export", FuelPriceController.exportData);
+
 // Get a specific fuel price record by ID
 fuelPriceRouter.get("/:id", FuelPriceController.getById);
 
