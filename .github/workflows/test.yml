@@ -1,0 +1,56 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run linting
+        run: pnpm run lint
+
+      - name: Check formatting
+        run: pnpm run format:check
+
+      - name: Run tests
+        run: pnpm run test
+        env:
+          NODE_ENV: test
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Upload coverage (Node.js 20.x only)
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: coverage/
+          retention-days: 30
