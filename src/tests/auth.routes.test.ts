@@ -11,7 +11,7 @@ const app = createTestApp();
 // Helper function to generate truly unique IDs
 const generateUniqueId = () => {
   // Add process ID and additional entropy to ensure uniqueness across parallel test runs
-  return `${Date.now()}-${process.pid}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}-${performance.now().toString().replace('.', '')}`;
+  return `${Date.now()}-${process.pid}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}-${performance.now().toString().replace(".", "")}`;
 };
 
 describe("Authentication API Routes", () => {

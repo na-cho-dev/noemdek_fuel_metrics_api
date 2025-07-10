@@ -11,16 +11,17 @@ A comprehensive REST API for analyzing and managing fuel price data across Niger
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [API Endpoints](#api-endpoints)
+- [API Documentation](#api-documentation)
 - [Data Models](#data-models)
 - [Analytics Features](#analytics-features)
 - [Configuration](#configuration)
 - [Data Import](#data-import)
 - [Authentication](#authentication)
 - [Testing](#testing)
+- [Postman Collection](#postman-collection)
 - [Error Handling](#error-handling)
 - [Scripts](#scripts)
 - [Contributing](#contributing)
-- [Postman Collection](#postman-collection) <!-- Added new section -->
 
 ---
 
@@ -63,19 +64,24 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
 - **National Averages** across all time periods
 
 ### 🔐 Security & Performance
-- **JWT Authentication** for secure API access
-- **Role-based Access Control**
+- **JWT Authentication** with Access & Refresh Token system
+- **Role-based Access Control** with Admin and Analyst roles
+- **Token Rotation** for enhanced security
 - **Request Validation** with Zod schemas
-- **Error Handling** with detailed error responses
+- **Comprehensive Error Handling** with detailed error responses
 - **Performance Optimization** with MongoDB aggregation pipelines
+- **Input Sanitization** and validation middleware
 
 ### 🛠️ Technical Features
-- **TypeScript** for type safety
-- **MongoDB** with Mongoose ODM
-- **Excel Data Import** capabilities
+- **TypeScript** for comprehensive type safety
+- **MongoDB** with Mongoose ODM and optimized queries
+- **Excel Data Import** capabilities with bulk processing
 - **Comprehensive Logging** with Winston
-- **Health Check Endpoints**
-- **CORS & Security Headers**
+- **Health Check Endpoints** with dependency monitoring
+- **CORS & Security Headers** with Helmet
+- **Swagger Documentation** with auto-generated API specs
+- **Redis Support** for caching and session management
+- **File Upload** capabilities with Multer middleware
 
 ---
 
@@ -83,14 +89,17 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
 
 - **Runtime**: Node.js (v18+)
 - **Framework**: Express.js 5.x
-- **Language**: TypeScript
-- **Database**: MongoDB with Mongoose
-- **Authentication**: JSON Web Tokens (JWT)
-- **Validation**: Zod
-- **Logging**: Winston
-- **Security**: Helmet, CORS
-- **Data Import**: XLSX for Excel file processing
-- **Development**: ts-node-dev for hot reload
+- **Language**: TypeScript with strict type checking
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JSON Web Tokens (JWT) with refresh token rotation
+- **Validation**: Zod for runtime type validation
+- **Documentation**: Swagger/OpenAPI 3.0 with swagger-jsdoc
+- **Logging**: Winston with structured logging
+- **Security**: Helmet, CORS, bcryptjs for password hashing
+- **File Processing**: XLSX for Excel imports, Multer for file uploads
+- **Testing**: Jest with Supertest for API testing
+- **Development**: ts-node-dev for hot reload, ESLint + Prettier for code quality
+- **Caching**: Redis support for session management
 
 ---
 
@@ -120,7 +129,7 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
    Create a `.env` file in the root directory:
    ```env
    NODE_ENV=development
-   PORT=5000
+   PORT=3300
    HOST=0.0.0.0
    MONGODB_URI=mongodb://localhost:27017/fuel_metrics_db
    JWT_SECRET=your-super-secret-jwt-key
@@ -139,7 +148,7 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
    pnpm run seed:db
    ```
 
-The API will be available at `http://localhost:5000`
+The API will be available at `http://localhost:3300`
 
 ---
 
@@ -150,34 +159,67 @@ src/
 ├── app.ts                          # Main application entry point
 ├── config/
 │   ├── index.ts                    # Environment configuration
-│   └── database.ts                 # MongoDB connection setup
+│   ├── database.ts                 # MongoDB connection setup
+│   ├── roles.ts                    # Role-based access control definitions
+│   └── swagger.ts                  # Swagger/OpenAPI configuration
 ├── controllers/
+│   ├── auth.controller.ts          # Authentication endpoints
 │   ├── fuel.price.controller.ts    # CRUD operations for fuel prices
-│   └── fuel.analysis.controller.ts # Analytics and reporting endpoints
+│   ├── fuel.analysis.controller.ts # Analytics and reporting endpoints
+│   └── retail-data.controller.ts   # Retail data management
 ├── middleware/
-│   ├── auth.middleware.ts          # JWT authentication
-│   └── error.middleware.ts         # Global error handling
+│   ├── auth.middleware.ts          # JWT authentication & authorization
+│   ├── error.middleware.ts         # Global error handling
+│   ├── upload.middleware.ts        # File upload handling
+│   └── index.ts                    # Middleware exports
 ├── models/
-│   └── fuel.model.ts              # MongoDB schema for fuel data
+│   ├── fuel.model.ts              # MongoDB schema for fuel data
+│   ├── user.model.ts              # User schema with authentication
+│   ├── refresh-token.model.ts     # Refresh token management
+│   └── retail-entry.model.ts      # Retail data schema
 ├── routes/
 │   ├── auth.routes.ts             # Authentication routes
 │   ├── fuel.price.routes.ts       # Fuel price CRUD routes
-│   └── fuel.analysis.routes.ts    # Analytics routes
+│   ├── fuel.analysis.routes.ts    # Analytics routes
+│   ├── retail-data.routes.ts      # Retail data routes
+│   ├── system.routes.ts           # Health checks and system info
+│   └── index.ts                   # Route exports
 ├── services/
+│   ├── auth.service.ts            # Authentication business logic
 │   ├── fuel.price.service.ts      # Business logic for price operations
-│   └── fuel.analysis.service.ts   # Analytics and reporting logic
+│   ├── fuel.analysis.service.ts   # Analytics and reporting logic
+│   ├── user.service.ts            # User management logic
+│   ├── refresh-token.service.ts   # Token management
+│   └── retail-data.service.ts     # Retail data business logic
 ├── types/
+│   ├── auth.types.ts              # Authentication type definitions
 │   ├── enums.ts                   # Enums for regions and fuel products
-│   └── fuel.types.ts             # TypeScript interfaces and DTOs
+│   ├── fuel.types.ts             # TypeScript interfaces and DTOs
+│   ├── retail-data.types.ts      # Retail data type definitions
+│   ├── user.types.ts             # User-related types
+│   └── express.d.ts              # Express request extension types
 ├── utils/
 │   ├── logger.ts                  # Winston logging configuration
-│   └── dateRange.ts              # Date utility functions
-└── validation/
-    └── fuel.schema.ts             # Zod validation schemas
+│   ├── jwt.ts                     # JWT utility functions
+│   └── date-range.ts             # Date utility functions
+├── validation/
+│   ├── auth.schema.ts             # Authentication validation schemas
+│   └── fuel.schema.ts             # Zod validation schemas
+└── tests/
+    ├── setup.ts                   # Test configuration
+    ├── test-app.ts               # Test application factory
+    ├── app.test.ts               # Application tests
+    ├── auth.routes.test.ts       # Authentication endpoint tests
+    ├── fuel.price.routes.test.ts # Fuel price endpoint tests
+    ├── fuel.analysis.routes.test.ts # Analytics endpoint tests
+    ├── middleware/
+    │   └── auth.middleware.test.ts # Middleware tests
+    └── utils/
+        └── test-helpers.ts        # Test utility functions
 
 scripts/
-├── importFuelData.ts              # Excel data import script
-└── resetDatabase.ts               # Database reset utility
+├── import-fuel-data.ts            # Excel data import script
+└── reset-database.ts             # Database reset utility
 ```
 
 ---
@@ -189,20 +231,24 @@ scripts/
 GET  /                    # API status and information
 GET  /health              # Basic health check
 GET  /health/detailed     # Detailed health with dependencies
-GET  /api-info           # API metadata and available endpoints
+GET  /api/info           # API metadata and available endpoints
+GET  /api-docs           # Swagger documentation UI
 ```
 
 ### 🔐 Authentication
 ```
-POST /api/auth/login      # User authentication
 POST /api/auth/register   # User registration
+POST /api/auth/login      # User authentication
 POST /api/auth/refresh    # Token refresh
+POST /api/auth/logout     # Logout and token revocation
+GET  /api/auth/me         # Get current user information
 ```
 
 ### ⛽ Fuel Price Management
 ```
 POST   /api/fuel          # Create new fuel price record
 GET    /api/fuel          # Get all fuel prices (paginated & filtered)
+GET    /api/fuel/filters  # Get available filter options
 GET    /api/fuel/:id      # Get specific fuel price record
 PUT    /api/fuel/:id      # Update fuel price record
 DELETE /api/fuel/:id      # Delete fuel price record
@@ -217,6 +263,15 @@ DELETE /api/fuel/:id      # Delete fuel price record
 - `product` - Filter by specific product
 - `minPrice` - Minimum price filter
 - `maxPrice` - Maximum price filter
+
+### 🏪 Retail Data Management
+```
+POST   /api/retail-data          # Upload single retail data entry
+POST   /api/retail-data/bulk     # Bulk upload via file
+GET    /api/retail-data          # Get all retail data (filtered)
+PUT    /api/retail-data/:id/approve  # Approve retail data entry
+PUT    /api/retail-data/:id/reject   # Reject retail data entry
+```
 
 ### 📊 Analytics & Reporting
 ```
@@ -239,11 +294,38 @@ GET /api/fuel-analysis/weekly-report             # Weekly state reports
 
 ---
 
+## API Documentation
+
+### Swagger/OpenAPI Documentation
+The API includes comprehensive Swagger documentation available at `/api-docs` when the server is running. 
+
+#### Features:
+- **Interactive API Explorer**: Test endpoints directly from the browser
+- **Schema Definitions**: Complete request/response schemas
+- **Authentication Support**: Built-in authentication testing
+- **Example Requests**: Sample data for all endpoints
+- **Response Examples**: Expected response formats
+
+#### Accessing Documentation:
+- **Local Development**: [http://localhost:3300/api-docs](http://localhost:3300/api-docs)
+- **Production**: Available at your production domain `/api-docs`
+
+#### Configuration:
+The Swagger specification is configured in `src/config/swagger.ts` with:
+- OpenAPI 3.0 specification
+- JWT Bearer authentication
+- Comprehensive schema definitions
+- Multiple server environments
+- Custom UI styling
+
+---
+
 ## Data Models
 
 ### Fuel Price Record
 ```typescript
 {
+  _id: string;             // MongoDB ObjectId
   state: string;           // Nigerian state name
   region: Region;          // Geopolitical region enum
   period: Date;            // Price effective date
@@ -251,6 +333,35 @@ GET /api/fuel-analysis/weekly-report             # Weekly state reports
   PMS: number;            // Petrol price
   DPK: number;            // Kerosene price
   LPG: number;            // Cooking gas price
+  createdAt: Date;        // Record creation timestamp
+  updatedAt: Date;        // Last update timestamp
+}
+```
+
+### User Record
+```typescript
+{
+  _id: string;             // MongoDB ObjectId
+  name: string;            // User full name
+  email: string;           // User email (unique)
+  password: string;        // Hashed password
+  role: "admin" | "analyst"; // User role
+  isVerified: boolean;     // Email verification status
+  createdAt: Date;        // Account creation timestamp
+  updatedAt: Date;        // Last update timestamp
+}
+```
+
+### Retail Data Entry
+```typescript
+{
+  _id: string;             // MongoDB ObjectId
+  retailerName: string;    // Name of the retailer
+  location: string;        // Retailer location
+  fuelType: "PMS" | "AGO" | "DPK" | "LPG"; // Fuel product type
+  price: number;           // Price per liter/kg
+  date: Date;             // Date of price recording
+  status: "pending" | "approved" | "rejected"; // Approval status
   createdAt: Date;        // Record creation timestamp
   updatedAt: Date;        // Last update timestamp
 }
@@ -317,11 +428,13 @@ The application uses environment-based configuration:
 ### Required Environment Variables
 ```env
 NODE_ENV=development|production
-PORT=5000
+PORT=3300
 HOST=0.0.0.0
 MONGODB_URI=mongodb://localhost:27017/fuel_metrics_db
-JWT_SECRET=your-secret-key
-JWT_EXPIRES_IN=7d
+JWT_ACCESS_SECRET=your-super-secret-access-key
+JWT_REFRESH_SECRET=your-super-secret-refresh-key
+JWT_ACCESS_EXPIRES_IN=1d
+JWT_REFRESH_EXPIRES_IN=7d
 CORS_ORIGIN=*
 CLIENT_URL=http://localhost:3000
 ```
@@ -330,6 +443,8 @@ CLIENT_URL=http://localhost:3000
 - **LOG_LEVEL**: Logging verbosity (error, warn, info, debug)
 - **REQUEST_TIMEOUT**: API request timeout in milliseconds
 - **MAX_FILE_SIZE**: Maximum upload file size for data import
+- **RATE_LIMIT_WINDOW**: Rate limiting window in milliseconds (default: 15 minutes)
+- **RATE_LIMIT_MAX**: Maximum requests per window (default: 100)
 
 ---
 
@@ -358,7 +473,7 @@ pnpm run reset:db  # Clears all fuel price data
 ## Authentication
 
 ### JWT Authentication
-All API endpoints (except health checks) require authentication:
+All API endpoints (except health checks and authentication endpoints) require authentication:
 
 ```bash
 # Include JWT token in Authorization header
@@ -376,14 +491,17 @@ Authorization: Bearer <your-jwt-token>
 - **Register**: `POST /api/auth/register`
 - **Refresh**: `POST /api/auth/refresh`
 - **Logout**: `POST /api/auth/logout`
-- **Access Token Expiry**: 24 hours
-- **Refresh Token Expiry**: 7 days
+- **Current User**: `GET /api/auth/me`
+- **Access Token Expiry**: 24 hours (configurable)
+- **Refresh Token Expiry**: 7 days (configurable)
 
 ### Security Features
 - **Token Rotation**: New refresh tokens are issued with every refresh
 - **Revocation**: Refresh tokens are invalidated after use or logout
-- **MongoDB Storage**: Refresh tokens are stored with a unique constraint
-- **Role-Based Access**: Different endpoints require specific user roles
+- **MongoDB Storage**: Refresh tokens are stored securely with TTL
+- **Role-Based Access**: Different endpoints require specific user roles (Admin/Analyst)
+- **Password Security**: bcryptjs hashing with salt rounds
+- **Input Validation**: Comprehensive validation with Zod schemas
 
 ---
 
@@ -422,39 +540,38 @@ pnpm test:integration
 
 Tests use an in-memory MongoDB server via `mongodb-memory-server` to provide isolation between test runs. This ensures tests don't interfere with your development or production databases.
 
+### Test Coverage
+
+The API includes comprehensive test coverage for:
+- **Authentication flows** (registration, login, token refresh, logout)
+- **All API endpoints** with success and error scenarios
+- **Middleware functionality** (authentication, error handling)
+- **Input validation** with various edge cases
+- **Business logic** in services and controllers
+
 ### Test Best Practices
 
 To ensure consistent and reliable test execution:
 
-1. **Unique Test Data**: Always use unique identifiers (emails, usernames, etc.) for test data to prevent conflicts between test runs. The auth tests use a combination of timestamps and random strings to create unique emails:
-   ```typescript
-   const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-   const userData = {
-     email: `user-${uniqueId}@example.com`,
-     // other fields...
-   };
-   ```
+1. **Unique Test Data**: Tests use unique identifiers with timestamps and random strings to prevent conflicts between test runs
+2. **Test Isolation**: Each test runs with its own data to prevent interference
+3. **Data Cleanup**: The test environment cleans up data after all tests complete
+4. **TypeScript Integration**: Jest globals are automatically recognized through tsconfig.json
 
-2. **Test Isolation**: Each test runs with its own data to prevent interference between tests.
-
-3. **Data Cleanup**: The test environment cleans up data after all tests complete.
-
-4. **TypeScript Integration**: The project is configured to recognize Jest globals automatically through tsconfig.json, eliminating the need for explicit imports.
-
-### Running Tests
+### Test Commands
 
 ```bash
 # Run all tests
 pnpm test
 
 # Run specific test suites
-pnpm test:unit
-pnpm test:integration
+pnpm test:unit         # Unit tests only
+pnpm test:integration  # Integration/routes tests only
 
 # Generate coverage report
 pnpm test:coverage
 
-# Run tests in watch mode
+# Run tests in watch mode (during development)
 pnpm test:watch
 ```
 
@@ -472,7 +589,7 @@ A ready-to-use [Postman collection](./NOEMDEK_FUEL_METRICS_API_(v2.1).postman_co
    - Select the file: `NOEMDEK_FUEL_METRICS_API_(v2.1).postman_collection.json` from the project root.
 3. **Set the `baseUrl` variable**:
    - The collection uses a `baseUrl` variable (default: `https://noemdek-fuel-metrics-api.onrender.com`).
-   - Change it to your local server if needed (e.g., `http://localhost:5000`).
+   - Change it to your local server if needed (e.g., `http://localhost:3300`).
 4. **Authorize requests**:
    - The collection is pre-configured for Bearer token authentication.
    - Update the token in the collection variables if you need to use a different user/session.
@@ -484,11 +601,13 @@ A ready-to-use [Postman collection](./NOEMDEK_FUEL_METRICS_API_(v2.1).postman_co
 ## Error Handling
 
 ### Error Types
-- **ValidationError**: Invalid request data
+- **ValidationError**: Invalid request data with detailed field errors
 - **AuthenticationError**: Missing or invalid tokens
-- **AuthorizationError**: Insufficient permissions
+- **AuthorizationError**: Insufficient permissions for the requested action
 - **NotFoundError**: Resource not found
-- **DuplicateError**: Duplicate data conflicts
+- **DuplicateError**: Duplicate data conflicts (e.g., email already exists)
+- **TokenExpiredError**: JWT token has expired
+- **JsonWebTokenError**: Invalid JWT token format
 
 ### Error Response Format
 ```json
@@ -497,7 +616,31 @@ A ready-to-use [Postman collection](./NOEMDEK_FUEL_METRICS_API_(v2.1).postman_co
   "message": "Detailed error description",
   "code": "VALIDATION_ERROR",
   "timestamp": "2024-01-01T00:00:00.000Z",
-  "details": {...}  // Additional error context
+  "path": "/api/fuel",
+  "method": "POST",
+  "details": {...}  // Additional error context (development only)
+}
+```
+
+#### Validation Error Example
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": [
+    {
+      "path": "email",
+      "message": "Invalid email format"
+    },
+    {
+      "path": "password",
+      "message": "Password must be at least 6 characters"
+    }
+  ],
+  "code": "VALIDATION_ERROR",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "path": "/api/auth/register",
+  "method": "POST"
 }
 ```
 
@@ -544,16 +687,20 @@ pnpm validate         # Run lint + format + tests
 7. Open a Pull Request
 
 ### Code Standards
-- **TypeScript**: Strict type checking enabled
-- **ESLint**: Airbnb configuration with custom rules
-- **Prettier**: Consistent code formatting
+- **TypeScript**: Strict type checking enabled with comprehensive interfaces
+- **ESLint**: Extended configuration with TypeScript support
+- **Prettier**: Consistent code formatting across the codebase
 - **Conventional Commits**: Standardized commit messages
+- **Zod Validation**: Runtime type validation for all API inputs
+- **Error Handling**: Comprehensive error handling with custom error classes
 
 ### Testing Requirements
-- Unit tests for new features
-- Integration tests for API endpoints
-- Minimum 80% code coverage
+- Unit tests for all new features and services
+- Integration tests for all API endpoints
+- Authentication tests for secured endpoints
+- Minimum 80% code coverage maintained
 - All tests must pass before merging
+- Test data must use unique identifiers to avoid conflicts
 
 ---
 
@@ -567,8 +714,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions, issues, or feature requests:
 - **Issues**: [GitHub Issues](https://github.com/noemdek/fuel-metrics-api/issues)
-- **Documentation**: [API Documentation](http://localhost:5000/api-docs)
-- **Health Check**: [http://localhost:5000/health](http://localhost:5000/health)
+- **Documentation**: [API Documentation](http://localhost:3300/api-docs)
+- **Health Check**: [http://localhost:3300/health](http://localhost:3300/health)
 
 ---
 

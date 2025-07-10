@@ -7,7 +7,7 @@ export const RegisterSchema = z.object({
     .string()
     .min(6, "Password must be at least 6 characters")
     .regex(
-      /^(?=.*[0-9])(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>/?]).*$/,
+      /^(?=.*[0-9])(?=.*[!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?]).*$/,
       "Password must include at least one number and one special character"
     ),
   role: z.string().optional(), // or z.enum(['admin', 'viewer']) if roles are strict

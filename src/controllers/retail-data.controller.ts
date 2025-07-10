@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { RetailDataService } from "../services";
-import { RetailDataModel } from "../models/retail-entry.model";
 
 export class RetailDataController {
   /**

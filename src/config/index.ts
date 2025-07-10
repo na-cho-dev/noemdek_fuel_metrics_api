@@ -6,7 +6,7 @@ export const config = {
   // Server Configuration
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: parseInt(process.env.PORT || "5000"),
-  HOST: process.env.HOST || "0.0.0.0",
+  HOST: process.env.HOST || "localhost",
 
   // Database Configuration
   MONGODB_URI:
@@ -32,3 +32,6 @@ export const config = {
     MAX: parseInt(process.env.RATE_LIMIT_MAX || "100"), // 100 requests per window
   },
 };
+
+// Re-export swagger config
+export { swaggerSpec } from "./swagger";

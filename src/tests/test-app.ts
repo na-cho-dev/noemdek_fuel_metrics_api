@@ -10,7 +10,6 @@ import compression from "compression";
 import morgan from "morgan";
 
 import { config } from "../config";
-import { logger } from "../utils/logger";
 import { errorHandler } from "../middleware/error.middleware";
 
 // Import your routes here

@@ -4,7 +4,7 @@ import logger from "../utils/logger";
 
 export const connectDatabase = async (): Promise<void> => {
   try {
-    const conn = await mongoose.connect(config.MONGODB_URI);
+    await mongoose.connect(config.MONGODB_URI);
     logger.info("MongoDB Connected");
   } catch (error) {
     logger.error("Database connection failed:", error);

@@ -11,7 +11,7 @@ export const errorHandler = (
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   logger.error(`Error on ${req.method} ${req.url}:`, {
     message: err.message,

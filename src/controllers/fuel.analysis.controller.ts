@@ -22,7 +22,7 @@ export class FuelAnalysisController {
         data: summary.filter(Boolean),
       });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -31,12 +31,16 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getAllTimeNationalAverage(req: Request, res: Response, next: NextFunction) {
+  static async getAllTimeNationalAverage(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const data = await FuelAnalysisService.getAllTimeNationalAverage();
       res.status(200).json({ success: true, data: data[0] });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -45,12 +49,16 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getAverageByRegion(req: Request, res: Response, next: NextFunction) {
+  static async getAverageByRegion(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const data = await FuelAnalysisService.getAverageByRegion();
       res.status(200).json({ success: true, data });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -59,7 +67,11 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getTopStatesByProduct(req: Request, res: Response, next: NextFunction) {
+  static async getTopStatesByProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const { product } = req.params;
       const { order = "desc" } = req.query;
@@ -69,7 +81,7 @@ export class FuelAnalysisController {
       );
       res.status(200).json({ success: true, data });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -114,7 +126,7 @@ export class FuelAnalysisController {
         },
       });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -150,7 +162,7 @@ export class FuelAnalysisController {
         },
       });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -201,7 +213,7 @@ export class FuelAnalysisController {
         },
       });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 
@@ -210,7 +222,11 @@ export class FuelAnalysisController {
    * @param req - Express request object
    * @param res - Express response object
    */
-  static async getWeeklyReport(req: Request, res: Response, next: NextFunction) {
+  static async getWeeklyReport(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const product = req.query.product as string;
 
@@ -228,7 +244,7 @@ export class FuelAnalysisController {
         },
       });
     } catch (error: any) {
-      next(error)
+      next(error);
     }
   }
 }

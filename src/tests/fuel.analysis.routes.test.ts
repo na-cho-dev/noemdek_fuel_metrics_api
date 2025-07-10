@@ -7,7 +7,7 @@
 import request from "supertest";
 import { createTestApp } from "./test-app";
 import { TestHelpers } from "./utils/test-helpers";
-import { Region, FuelProduct } from "../types/enums";
+import { Region } from "../types/enums";
 import FuelModel from "../models/fuel.model";
 
 const app = createTestApp();
@@ -552,12 +552,12 @@ describe("Fuel Analysis Routes Tests", () => {
               state === "Lagos"
                 ? Region.SOUTH_WEST
                 : state === "Kano"
-                ? Region.NORTH_WEST
-                : state === "Abuja"
-                ? Region.NORTH_CENTRAL
-                : state === "Rivers"
-                ? Region.SOUTH_SOUTH
-                : Region.NORTH_WEST,
+                  ? Region.NORTH_WEST
+                  : state === "Abuja"
+                    ? Region.NORTH_CENTRAL
+                    : state === "Rivers"
+                      ? Region.SOUTH_SOUTH
+                      : Region.NORTH_WEST,
             period: date,
             AGO: 750 + Math.random() * 10,
             PMS: 617 + Math.random() * 10,
