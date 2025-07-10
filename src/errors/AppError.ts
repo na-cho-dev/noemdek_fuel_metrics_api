@@ -17,7 +17,7 @@ export class ValidationError extends Error {
   public statusCode: number;
   public isOperational: boolean;
 
-  constructor(message: string, statusCode: number = 400) {
+  constructor(message: string, statusCode: number = 422) {
     super(message);
     this.name = "ValidationError";
     this.statusCode = statusCode;
