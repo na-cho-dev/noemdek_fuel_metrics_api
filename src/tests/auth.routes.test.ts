@@ -3,10 +3,8 @@
  * @description Comprehensive tests for user registration, login, token management, and validation
  * @testFile auth.routes.test.ts
  */
-
 import request from "supertest";
 import { createTestApp } from "./test-app";
-import { TestHelpers } from "./utils/test-helpers";
 
 const app = createTestApp();
 
@@ -55,7 +53,7 @@ describe("Authentication API Routes", () => {
       });
     });
 
-    it("should assign default 'analyst' role to new users during registration process", async () => {
+    it('should assign default "analyst" role to new users during registration process', async () => {
       const uniqueId = `${Date.now()}-${Math.random()
         .toString(36)
         .substr(2, 9)}`;
