@@ -120,7 +120,13 @@ const startServer = async () => {
         `Started at: ${new Date().toLocaleString()}`,
         `API Root: http://${config.HOST}:${config.PORT}/`,
         `API Docs: http://${config.HOST}:${config.PORT}/api-docs`,
+        `Render Port Detected: ${process.env.PORT ? "Yes" : "No"}`,
       ]);
+    });
+
+    // Log that server is ready for Render
+    server.on("listening", () => {
+      logger.info(`Server is listening on ${config.HOST}:${config.PORT}`);
     });
 
     // Graceful shutdown
