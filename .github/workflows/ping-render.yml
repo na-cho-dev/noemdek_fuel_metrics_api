@@ -1,36 +1,36 @@
-name: Keep Render Alive
+# name: Keep Render Alive
 
-on:
-  schedule:
-    - cron: "*/5 * * * *" # Every 5 minutes
-  workflow_dispatch:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    types:
-      - completed
-    branches:
-      - main
+# on:
+#   schedule:
+#     - cron: "*/5 * * * *" # Every 5 minutes
+#   workflow_dispatch:
+#   workflow_run:
+#     workflows: ["Continuous Integration"]
+#     types:
+#       - completed
+#     branches:
+#       - main
 
-jobs:
-  ping:
-    runs-on: ubuntu-latest
-    # Only run if CI passed or if manually triggered/scheduled
-    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
-    steps:
-      - name: Ping Render Server
-        id: ping
-        run: |
-          echo "Pinging Render server..."
-          STATUS=$(curl -s -o response.txt -w "%{http_code}" https://noemdek-fuel-metrics-api.onrender.com/health)
-          echo "HTTP status: $STATUS"
-          echo "Response:"
-          cat response.txt
+# jobs:
+#   ping:
+#     runs-on: ubuntu-latest
+#     # Only run if CI passed or if manually triggered/scheduled
+#     if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
+#     steps:
+#       - name: Ping Render Server
+#         id: ping
+#         run: |
+#           echo "Pinging Render server..."
+#           STATUS=$(curl -s -o response.txt -w "%{http_code}" https://noemdek-fuel-metrics-api.onrender.com/health)
+#           echo "HTTP status: $STATUS"
+#           echo "Response:"
+#           cat response.txt
 
-          if [ "$STATUS" -ne 200 ]; then
-            echo "::error ::Ping failed with status $STATUS"
-            exit 1
-          fi
+#           if [ "$STATUS" -ne 200 ]; then
+#             echo "::error ::Ping failed with status $STATUS"
+#             exit 1
+#           fi
 
-      - name: Notify Failure (optional)
-        if: failure()
-        run: echo "Ping failed! You can integrate email or Slack here."
+#       - name: Notify Failure (optional)
+#         if: failure()
+#         run: echo "Ping failed! You can integrate email or Slack here."
