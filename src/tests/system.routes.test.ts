@@ -1,5 +1,7 @@
 import request from "supertest";
-import { app } from "../app";
+import { createTestApp } from "./test-app";
+
+const app = createTestApp();
 
 describe("System Routes", () => {
   describe("GET /", () => {

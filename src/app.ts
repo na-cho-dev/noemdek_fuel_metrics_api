@@ -145,4 +145,7 @@ process.on("unhandledRejection", (reason, promise) => {
   process.exit(1);
 });
 
-startServer();
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}

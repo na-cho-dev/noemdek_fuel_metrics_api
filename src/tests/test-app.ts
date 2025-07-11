@@ -12,11 +12,14 @@ import morgan from "morgan";
 import { config } from "../config";
 import { errorHandler } from "../middleware/error.middleware";
 
-// Import your routes here
-import authRouter from "../routes/auth.routes";
-import fuelPriceRouter from "../routes/fuel.price.routes";
-import fuelAnalysisRouter from "../routes/fuel.analysis.routes";
-import retailDataRouter from "../routes/retail-data.routes";
+// Import your routes here - use the same structure as main app
+import {
+  authRouter,
+  fuelPriceRouter,
+  fuelAnalysisRouter,
+  retailDataRouter,
+  systemRouter,
+} from "../routes";
 
 // Create test app without starting server
 export const createTestApp = (): Application => {
@@ -47,71 +50,8 @@ export const createTestApp = (): Application => {
 
   // ===== ROUTES SECTION - Define all routes here =====
 
-  // Root route
-  app.get("/", (req: Request, res: Response) => {
-    res.status(200).json({
-      message: "Express API is running!",
-      version: "1.0.0",
-      environment: config.NODE_ENV,
-      timestamp: new Date().toISOString(),
-    });
-  });
-
-  // Health Check
-  app.get("/health", (req: Request, res: Response) => {
-    const healthData = {
-      status: "OK",
-      environment: config.NODE_ENV,
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
-      timestamp: new Date().toISOString(),
-      version: "1.0.0",
-    };
-
-    res.status(200).json(healthData);
-  });
-
-  // Detailed health check with dependencies
-  app.get("/health/detailed", async (req: Request, res: Response) => {
-    try {
-      const healthData = {
-        status: "OK",
-        environment: config.NODE_ENV,
-        uptime: process.uptime(),
-        memory: process.memoryUsage(),
-        timestamp: new Date().toISOString(),
-        version: "1.0.0",
-        dependencies: {
-          mongodb: "connected",
-        },
-      };
-
-      res.status(200).json(healthData);
-    } catch (error) {
-      res.status(503).json({
-        status: "error",
-        message: "Service unhealthy",
-        error: error instanceof Error ? error.message : "Unknown error",
-        timestamp: new Date().toISOString(),
-      });
-    }
-  });
-
-  // API Info route
-  app.get("/api-info", (req: Request, res: Response) => {
-    res.status(200).json({
-      name: "NOEMDEK Technical Interview",
-      version: "1.0.0",
-      description: "This is an API for the NOEMDEK technical interview.",
-      endpoints: {
-        app: "/",
-        health: "/health",
-        detailedHealth: "/health/detailed",
-        docs: "/api-docs",
-        info: "/api-info",
-      },
-    });
-  });
+  // System routes (health checks, API info, etc.) - same as main app
+  app.use("/", systemRouter);
 
   // ===== API ROUTES =====
   app.use("/api/auth", authRouter);
@@ -126,11 +66,9 @@ export const createTestApp = (): Application => {
     res.status(404).json({
       error: "Not Found",
       message: `Cannot ${req.method} ${req.originalUrl}`,
-      availableEndpoints: {
+      "available-endpoints": {
         root: "GET /",
         health: "GET /health",
-        detailedHealth: "GET /health/detailed",
-        apiInfo: "GET /api-info",
         docs: "GET /api-docs",
       },
     });
