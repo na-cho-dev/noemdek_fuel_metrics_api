@@ -80,7 +80,7 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
 - **Health Check Endpoints** with dependency monitoring
 - **CORS & Security Headers** with Helmet
 - **Swagger Documentation** with auto-generated API specs
-- **Redis Support** for caching and session management
+<!-- - **Redis Support** for caching and session management -->
 - **File Upload** capabilities with Multer middleware
 
 ---
@@ -99,7 +99,7 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
 - **File Processing**: XLSX for Excel imports, Multer for file uploads
 - **Testing**: Jest with Supertest for API testing
 - **Development**: ts-node-dev for hot reload, ESLint + Prettier for code quality
-- **Caching**: Redis support for session management
+<!-- - **Caching**: Redis support for session management -->
 
 ---
 
@@ -140,7 +140,7 @@ The NOEMDEK Fuel Metrics API is designed to provide comprehensive fuel price ana
 
 4. **Start the development server:**
    ```bash
-   pnpm dev
+   pnpm run dev
    ```
 
 5. **Import sample data (optional):**
@@ -154,7 +154,7 @@ The API will be available at `http://localhost:3300`
 
 ## Project Structure
 
-```
+```bash
 src/
 ├── app.ts                          # Main application entry point
 ├── config/
@@ -203,8 +203,8 @@ src/
 │   ├── jwt.ts                     # JWT utility functions
 │   └── date-range.ts             # Date utility functions
 ├── validation/
-│   ├── auth.schema.ts             # Authentication validation schemas
-│   └── fuel.schema.ts             # Zod validation schemas
+│   ├── auth.schema.ts             # Zod Authentication validation schemas
+│   └── fuel.schema.ts             # Zod Fuel validation schemas
 └── tests/
     ├── setup.ts                   # Test configuration
     ├── test-app.ts               # Test application factory
@@ -227,16 +227,14 @@ scripts/
 ## API Endpoints
 
 ### 🏥 Health & System
-```
+```bash
 GET  /                    # API status and information
 GET  /health              # Basic health check
-GET  /health/detailed     # Detailed health with dependencies
-GET  /api/info           # API metadata and available endpoints
 GET  /api-docs           # Swagger documentation UI
 ```
 
 ### 🔐 Authentication
-```
+```bash
 POST /api/auth/register   # User registration
 POST /api/auth/login      # User authentication
 POST /api/auth/refresh    # Token refresh
@@ -245,10 +243,11 @@ GET  /api/auth/me         # Get current user information
 ```
 
 ### ⛽ Fuel Price Management
-```
+```bash
 POST   /api/fuel          # Create new fuel price record
 GET    /api/fuel          # Get all fuel prices (paginated & filtered)
 GET    /api/fuel/filters  # Get available filter options
+GET    /api/fuel/export   # Export fuel price data
 GET    /api/fuel/:id      # Get specific fuel price record
 PUT    /api/fuel/:id      # Update fuel price record
 DELETE /api/fuel/:id      # Delete fuel price record
@@ -264,18 +263,9 @@ DELETE /api/fuel/:id      # Delete fuel price record
 - `minPrice` - Minimum price filter
 - `maxPrice` - Maximum price filter
 
-### 🏪 Retail Data Management
-```
-POST   /api/retail-data          # Upload single retail data entry
-POST   /api/retail-data/bulk     # Bulk upload via file
-GET    /api/retail-data          # Get all retail data (filtered)
-PUT    /api/retail-data/:id/approve  # Approve retail data entry
-PUT    /api/retail-data/:id/reject   # Reject retail data entry
-```
-
 ### 📊 Analytics & Reporting
-```
-GET /api/fuel-analysis/summary                    # Price summary with changes
+```bash
+GET /api/fuel-analysis/summary                   # Price summary with changes
 GET /api/fuel-analysis/average/all-time          # National averages
 GET /api/fuel-analysis/average-by-region         # Regional averages
 GET /api/fuel-analysis/top/:product              # Top states by product
@@ -291,6 +281,15 @@ GET /api/fuel-analysis/weekly-report             # Weekly state reports
 - `region` - Regional filter
 - `range` - Time range (7d, 30d, 90d, 1y)
 - `order` - Sort order for rankings (asc, desc)
+
+### 🏪 Retail Data Management
+```bash
+POST   /api/retail-data               # Upload single retail data entry
+POST   /api/retail-data/bulk          # Bulk upload via file
+GET    /api/retail-data               # Get all retail data (filtered)
+PUT    /api/retail-data/:id/approve   # Approve retail data entry
+PUT    /api/retail-data/:id/reject    # Reject retail data entry
+```
 
 ---
 
@@ -330,41 +329,41 @@ The Swagger specification is configured in `src/config/swagger.ts` with:
   state: string;           // Nigerian state name
   region: Region;          // Geopolitical region enum
   period: Date;            // Price effective date
-  AGO: number;            // Diesel price
-  PMS: number;            // Petrol price
-  DPK: number;            // Kerosene price
-  LPG: number;            // Cooking gas price
-  createdAt: Date;        // Record creation timestamp
-  updatedAt: Date;        // Last update timestamp
+  AGO: number;             // Diesel price
+  PMS: number;             // Petrol price
+  DPK: number;             // Kerosene price
+  LPG: number;             // Cooking gas price
+  createdAt: Date;         // Record creation timestamp
+  updatedAt: Date;         // Last update timestamp
 }
 ```
 
 ### User Record
 ```typescript
 {
-  _id: string;             // MongoDB ObjectId
-  name: string;            // User full name
-  email: string;           // User email (unique)
-  password: string;        // Hashed password
-  role: "admin" | "analyst"; // User role
-  isVerified: boolean;     // Email verification status
-  createdAt: Date;        // Account creation timestamp
-  updatedAt: Date;        // Last update timestamp
+  _id: string;                // MongoDB ObjectId
+  name: string;               // User full name
+  email: string;              // User email (unique)
+  password: string;           // Hashed password
+  role: "admin" | "analyst";  // User role
+  isVerified: boolean;        // Email verification status
+  createdAt: Date;            // Account creation timestamp
+  updatedAt: Date;            // Last update timestamp
 }
 ```
 
 ### Retail Data Entry
 ```typescript
 {
-  _id: string;             // MongoDB ObjectId
-  retailerName: string;    // Name of the retailer
-  location: string;        // Retailer location
-  fuelType: "PMS" | "AGO" | "DPK" | "LPG"; // Fuel product type
-  price: number;           // Price per liter/kg
-  date: Date;             // Date of price recording
-  status: "pending" | "approved" | "rejected"; // Approval status
-  createdAt: Date;        // Record creation timestamp
-  updatedAt: Date;        // Last update timestamp
+  _id: string;                                  // MongoDB ObjectId
+  retailerName: string;                         // Name of the retailer
+  location: string;                             // Retailer location
+  fuelType: "PMS" | "AGO" | "DPK" | "LPG";      // Fuel product type
+  price: number;                                // Price per liter/kg
+  date: Date;                                   // Date of price recording
+  status: "pending" | "approved" | "rejected";  // Approval status
+  createdAt: Date;                              // Record creation timestamp
+  updatedAt: Date;                              // Last update timestamp
 }
 ```
 
@@ -375,10 +374,12 @@ All API responses follow a consistent format:
 ```json
 {
   "success": true,
-  "data": {...},
-  "page": 1,           // For paginated responses
-  "total": 100,        // For paginated responses
-  "totalPages": 10     // For paginated responses
+  "data": {
+    ...
+    "page": 1,           // For paginated responses
+    "total": 100,        // For paginated responses
+    "totalPages": 10     // For paginated responses
+  },
 }
 ```
 
@@ -559,23 +560,6 @@ To ensure consistent and reliable test execution:
 3. **Data Cleanup**: The test environment cleans up data after all tests complete
 4. **TypeScript Integration**: Jest globals are automatically recognized through tsconfig.json
 
-### Test Commands
-
-```bash
-# Run all tests
-pnpm test
-
-# Run specific test suites
-pnpm test:unit         # Unit tests only
-pnpm test:integration  # Integration/routes tests only
-
-# Generate coverage report
-pnpm test:coverage
-
-# Run tests in watch mode (during development)
-pnpm test:watch
-```
-
 ---
 
 ## Postman Collection
@@ -702,22 +686,3 @@ pnpm validate         # Run lint + format + tests
 - Minimum 80% code coverage maintained
 - All tests must pass before merging
 - Test data must use unique identifiers to avoid conflicts
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Support
-
-For questions, issues, or feature requests:
-- **Issues**: [GitHub Issues](https://github.com/noemdek/fuel-metrics-api/issues)
-- **Documentation**: [API Documentation](http://localhost:3300/api-docs)
-- **Health Check**: [http://localhost:3300/health](http://localhost:3300/health)
-
----
-
-**Built with ❤️ for the NOEMDEK Technical Interview**
