@@ -88,11 +88,9 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({
     error: "Not Found",
     message: `Cannot ${req.method} ${req.originalUrl}`,
-    availableEndpoints: {
+    "available-endpoints": {
       root: "GET /",
       health: "GET /health",
-      detailedHealth: "GET /health/detailed",
-      apiInfo: "GET /api/info",
       docs: "GET /api-docs",
     },
   });
@@ -104,10 +102,8 @@ app.use(errorHandler);
 // Start the server
 const startServer = async () => {
   try {
-    // Skip database connection during tests - test setup handles it
-    if (process.env.NODE_ENV !== "test") {
-      await connectDatabase();
-    }
+    // Connect to database
+    await connectDatabase();
 
     // Start the server
     const server = app.listen(config.PORT, config.HOST, () => {
@@ -120,13 +116,7 @@ const startServer = async () => {
         `Started at: ${new Date().toLocaleString()}`,
         `API Root: http://${config.HOST}:${config.PORT}/`,
         `API Docs: http://${config.HOST}:${config.PORT}/api-docs`,
-        `Render Port Detected: ${process.env.PORT ? "Yes" : "No"}`,
       ]);
-    });
-
-    // Log that server is ready for Render
-    server.on("listening", () => {
-      logger.info(`Server is listening on ${config.HOST}:${config.PORT}`);
     });
 
     // Graceful shutdown
@@ -139,34 +129,20 @@ const startServer = async () => {
     });
   } catch (error) {
     logger.error("Failed to start server:", error);
-    // Don't exit process during tests
-    if (process.env.NODE_ENV !== "test") {
-      process.exit(1);
-    } else {
-      throw error;
-    }
+    process.exit(1);
   }
 };
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
   logger.error("Uncaught Exception:", error);
-  // Don't exit process during tests
-  if (process.env.NODE_ENV !== "test") {
-    process.exit(1);
-  }
+  process.exit(1);
 });
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled Rejection:", { reason, promise });
-  // Don't exit process during tests
-  if (process.env.NODE_ENV !== "test") {
-    process.exit(1);
-  }
+  process.exit(1);
 });
 
-// Only start server if not in test environment
-if (process.env.NODE_ENV !== "test") {
-  startServer();
-}
+startServer();
